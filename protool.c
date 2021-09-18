@@ -97,8 +97,8 @@ unsigned char get_check_sum(unsigned char *pack, int pack_len) {
 
 void new_protool() 
 {
-    printf( "pthread_mutex_init::Protool.\n");
-    printf( "&pro_para.protool_mutex = %p.\n", &pro_para.protool_mutex );
+    //printf( "pthread_mutex_init::Protool.\n");
+    //printf( "&pro_para.protool_mutex = %p.\n", &pro_para.protool_mutex );
     pthread_mutex_init(&pro_para.protool_mutex, NULL);   
     //init_para();
     new_program_profile(CONFIG_FIE);
@@ -111,11 +111,8 @@ void new_protool()
 void delete_protool() 
 {
     pthread_mutex_destroy(&pro_para.protool_mutex);
-
     init_para();
-
     delete_program_profile();
-
 }
 
 
@@ -211,40 +208,28 @@ void login_process()
 
 
 
-int init_protool() {
+int init_protool() 
+{
     int ret;
-    /// init para
-	REBOOT:
 	
+REBOOT:	
 	init_para();
     new_protool(); 
 	//read conf para
     read_conf();
-
     //obtain big end or litter end
     get_end_type();
-
     get_runmode();
     //register thread
-    
-	
-	
-	printf("exit.1\n");
-    ServerRun = 0;  
-     
-
-	
-
-    mQuitPro = 0;
-    mLogin = 0;
+    ServerRun  = 0;  
+    mQuitPro   = 0;
+    mLogin     = 0;
     mHeartTime = 0;
     ret = RegisterStart();
-    if (ret != 0) {
-        //d_log(D_LOG_ERR, "RegisterStart error.\n");
-        printf("exit at [%s] init_protool error!xxx\n", __func__ );
-
+    if( ret != 0 ){                                            
+        //d_log(D_LOG_ERR, "RegisterStart error.\n");                                
+        printf( "exit at [%s] init_protool error!xxx\n", __func__ );
         delete_protool();
-
 		//printf("exit.2\n");
         sleep(3);
         goto REBOOT;
@@ -253,11 +238,21 @@ int init_protool() {
     //login process
     //过了前面的登录认证,才会走下面的流程
     login_process();
-
-	printf("exit.3\n");
-          
     return 0;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 int destroy_protool() {
     pro_para.protool_status = 2;
